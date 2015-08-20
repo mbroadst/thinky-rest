@@ -28,7 +28,7 @@ TestFixture.prototype.initializeDatabase = function() {
 TestFixture.prototype.initializeServer = function() {
   var self = this;
   if (process.env.USE_RESTIFY) {
-    self.server = TestFixture.app = restify.createServer();
+    self.server = self.app = restify.createServer();
     self.server.use(restify.queryParser());
     self.server.use(restify.bodyParser());
   } else {
