@@ -1,0 +1,50 @@
+{
+  "name": "thinky-rest",
+  "description": "Create REST resources and controllers with thinky and Express or Restify",
+  "version": "0.0.1",
+  "author": {
+    "name": "Matt Broadstone",
+    "email": "mbroadst@gmail.com"
+  },
+  "main": "lib/",
+  "scripts": {
+    "jshint": "jshint ./lib ./tests",
+    "mocha": "mocha --check-leaks -R spec -u exports tests/*.test.js tests/**/*.test.js",
+    "coverage": "istanbul cover node_modules/.bin/_mocha -- -- tests/*.test.js tests/**/*.test.js",
+    "test": "npm run-script jshint && npm run-script mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mbroadst/thinky-rest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dchester/thinky-rest/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "rethinkdb",
+    "thinky",
+    "rest",
+    "restful",
+    "json",
+    "api"
+  ],
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "inflection": "^1.7.1",
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.13.3",
+    "chai": "^3.2.0",
+    "express": "^4.13.3",
+    "istanbul": "^0.3.17",
+    "jshint": "^2.8.0",
+    "mocha": "^2.2.5",
+    "request": "^2.60.0",
+    "restify": "^3.0.3",
+    "thinky": "^2.1.4",
+    "uuid": "^1.4.2",
+    "validator": "^4.0.5"
+  }
+}
