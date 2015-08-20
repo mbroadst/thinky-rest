@@ -1,6 +1,7 @@
 'use strict';
 
-var thinky = require('thinky'),
+var Promise = require('bluebird'),
+    thinky = require('thinky'),
     http = require('http'),
     express = require('express'),
     bodyParser = require('body-parser'),
