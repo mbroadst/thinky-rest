@@ -56,6 +56,7 @@ describe('Resource(basic)', function() {
   afterEach(function(done) {
     test.clearDatabase()
       .then(function() {
+        test.userResource = undefined;
         test.server.close(done);
       });
   });
