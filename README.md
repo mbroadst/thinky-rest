@@ -14,7 +14,7 @@ var thinky = require('thinky')(),
 // Define your models
 var User = test.db.createModel('users', {
   username: thinky.type.string().required(),
-  email: thinky.type.type.date().required()
+  birthday: thinky.type.type.date().required()
 });
 
 // Initialize server
