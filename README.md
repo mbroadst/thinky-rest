@@ -1,6 +1,7 @@
 # thinky-rest
 
 [![Build Status](https://travis-ci.org/mbroadst/thinky-rest.svg?branch=master)](https://travis-ci.org/mbroadst/thinky-rest)
+[![Dependency Status](https://david-dm.org/mbroadst/thinky-rest.svg)](https://david-dm.org/mbroadst/thinky-rest)
 
 Create REST resources and controllers with thinky and Express or Restify
 
@@ -28,7 +29,7 @@ if (process.env.USE_RESTIFY) {
   var express = require('express'),
       bodyParser = require('body-parser');
 
-  var app = express();
+  app = express();
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   server = http.createServer(app);
