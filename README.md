@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/mbroadst/thinky-rest.svg?branch=master)](https://travis-ci.org/mbroadst/thinky-rest)
 [![Dependency Status](https://david-dm.org/mbroadst/thinky-rest.svg)](https://david-dm.org/mbroadst/thinky-rest)
 
-Create REST resources and controllers with thinky and Express or Restify
+Create REST resources and controllers with [thinky](http://thinky.io/) and [express](http://expressjs.com/) or [restify](http://mcavage.me/node-restify/)
 
 ## Getting Started
 ```javascript
