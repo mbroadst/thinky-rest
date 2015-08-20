@@ -94,7 +94,7 @@ describe('Resource(basic)', function() {
         json: { username: 'arthur', email: 'arthur@gmail.com' }
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(201);
-        expect(response.headers.location).to.match(/\/users\/\d+/);
+        expect(response.headers.location).to.match(/\/users\/\.*?/);
         done();
       });
     });
