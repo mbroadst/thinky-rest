@@ -17,6 +17,12 @@ describe('Resource(search)', function() {
           email: test.db.type.string().validator(validator.isEmail)
         });
 
+        test.models.UserWithIndex = test.db.createModel('usersWithIndex', {
+          username: test.db.type.string().required(),
+          email: test.db.type.string().validator(validator.isEmail)
+        });
+        test.models.UserWithIndex.ensureIndex('username');
+
         test.userlist = [
           { username: 'arthur', email: 'arthur@gmail.com' },
           { username: 'james', email: 'james@gmail.com' },
@@ -35,7 +41,10 @@ describe('Resource(search)', function() {
   beforeEach(function() {
     return test.initializeServer()
       .then(function() {
-        return test.models.User.save(_.cloneDeep(test.userlist));
+        return Promise.all([
+          test.models.User.save(_.cloneDeep(test.userlist)),
+          test.models.UserWithIndex.save(_.cloneDeep(test.userlist))
+        ]);
       })
       .then(function() {
         rest.initialize({ app: test.app, thinky: test.db });
@@ -109,23 +118,41 @@ describe('Resource(search)', function() {
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
         { username: 'arthur', email: 'arthur@gmail.com' }
       ]
+    },
+    {
+      name: 'using a secondary index if it exists',
+      config: {
+        model: function() { return test.models.UserWithIndex; }
+      },
+      extraQuery: 'username=arthur',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' }
+      ]
     }
   ].forEach(function(testCase) {
     it('should search ' + testCase.name, function(done) {
-      var testResource = rest.resource(_.extend(testCase.config, {
+      if (!!testCase.config.model) testCase.config.model = testCase.config.model();
+      var resourceConfig = _.defaults(testCase.config, {
         model: test.models.User,
         endpoints: ['/users', '/users/:id']
-      }));
+      });
 
+      var testResource = rest.resource(resourceConfig);
       var searchParam =
         testCase.config.search ? testCase.config.search.param || 'q' : 'q';
 
       if (testCase.preFlight)
         testResource.list.fetch.before(testCase.preFlight);
 
-      request.get({
-        url: test.baseUrl + '/users?' + searchParam + '=' + testCase.query
-      }, function(err, response, body) {
+      var url = test.baseUrl + resourceConfig.endpoints[0] + '?';
+      if (!!testCase.query) {
+        url = url + searchParam + '=' + testCase.query;
+        if (!!testCase.extraQuery) url = url + '&';
+      }
+
+      if (!!testCase.extraQuery) url = url + testCase.extraQuery;
+      request.get({ url: url }, function(err, response, body) {
         expect(response.statusCode).to.equal(200);
         var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
         records = _.sortBy(records, 'email');
