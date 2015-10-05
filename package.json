@@ -8,10 +8,7 @@
   },
   "main": "lib/",
   "scripts": {
-    "jshint": "jshint ./lib ./tests",
-    "mocha": "mocha --check-leaks -R spec -u exports tests/*.test.js tests/**/*.test.js",
-    "coverage": "istanbul cover node_modules/.bin/_mocha -- -- tests/*.test.js tests/**/*.test.js",
-    "test": "npm run-script jshint && npm run-script mocha"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
@@ -43,7 +40,7 @@
     "mocha": "^2.2.5",
     "request": "^2.60.0",
     "restify": "^3.0.3",
-    "thinky": "^2.1.4",
+    "thinky": "^2.1.8",
     "uuid": "^1.4.2",
     "validator": "^4.0.5"
   }
