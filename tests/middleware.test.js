@@ -106,7 +106,7 @@ describe('Middleware', function() {
           expect(response.statusCode).to.equal(201);
           var record = _.isObject(body) ? body : JSON.parse(body);
           request.get({
-            url: test.baseUrl + '/users/' + record.id
+            url: test.baseUrl + '/user/' + record.id
           }, function(err, response, body) {
             _.forOwn(middleware.results.read, function(result, milestone) {
               if (middleware === testMiddlewareBeforeAndAfter) {
@@ -133,7 +133,7 @@ describe('Middleware', function() {
           var record = _.isObject(body) ? body : JSON.parse(body);
 
           request.put({
-            url: test.baseUrl + '/users/' + record.id,
+            url: test.baseUrl + '/user/' + record.id,
             json: { username: 'another', email: 'name@gmail.com' }
           }, function(err, response, body) {
             _.forOwn(middleware.results.update, function(result, milestone) {
@@ -161,7 +161,7 @@ describe('Middleware', function() {
           var record = _.isObject(body) ? body : JSON.parse(body);
 
           request.del({
-            url: test.baseUrl + '/users/' + record.id
+            url: test.baseUrl + '/user/' + record.id
           }, function(err, response, body) {
             _.forOwn(middleware.results.delete, function(result, milestone) {
               if (middleware === testMiddlewareBeforeAndAfter) {

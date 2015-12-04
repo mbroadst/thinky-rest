@@ -460,7 +460,7 @@ describe('Milestones', function() {
         return context.continue;
       });
 
-      request.get({ url: test.baseUrl + '/users/1' }, function(err, response, body) {
+      request.get({ url: test.baseUrl + '/user/1' }, function(err, response, body) {
         expect(startCount).to.equal(2);
         done();
       });

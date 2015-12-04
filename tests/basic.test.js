@@ -39,7 +39,7 @@ describe('Resource(basic)', function() {
 
         test.userResource = rest.resource({
           model: test.models.User,
-          endpoints: ['/users', '/users/:id']
+          endpoints: ['/users', '/user/:id']
         });
 
         test.userResource.list.fetch.before(function(req, res, context) {
@@ -83,7 +83,7 @@ describe('Resource(basic)', function() {
         model: test.models.Person
       });
 
-      expect(resource.endpoints).to.eql({ plural: '/people', singular: '/people/:id' });
+      expect(resource.endpoints).to.eql({ plural: '/people', singular: '/person/:id' });
     });
 
   });
@@ -95,7 +95,7 @@ describe('Resource(basic)', function() {
         json: { username: 'arthur', email: 'arthur@gmail.com' }
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(201);
-        expect(response.headers.location).to.match(/\/users\/\.*?/);
+        expect(response.headers.location).to.match(/\/user\/\.*?/);
         done();
       });
     });
@@ -138,7 +138,7 @@ describe('Resource(basic)', function() {
   describe('read', function() {
     it('should return proper error for an invalid record', function(done) {
       request.get({
-        url: test.baseUrl + '/users/42'
+        url: test.baseUrl + '/user/42'
       }, function(err, response, body) {
         expect(response.statusCode).to.equal(404);
         var record = _.isObject(body) ? body : JSON.parse(body);
@@ -197,7 +197,7 @@ describe('Resource(basic)', function() {
   describe('update', function() {
     it('should return 404 for invalid record', function(done) {
       request.put({
-        url: test.baseUrl + '/users/42'
+        url: test.baseUrl + '/user/42'
       }, function(err, response, body) {
         expect(response.statusCode).to.equal(404);
         var record = _.isObject(body) ? body : JSON.parse(body);
@@ -236,7 +236,7 @@ describe('Resource(basic)', function() {
   describe('delete', function() {
     it('should return proper error for invalid record', function(done) {
       request.del({
-        url: test.baseUrl + '/users/42'
+        url: test.baseUrl + '/user/42'
       }, function(err, response, body) {
         expect(response.statusCode).to.equal(404);
         var record = _.isObject(body) ? body : JSON.parse(body);

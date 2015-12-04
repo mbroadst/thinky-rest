@@ -42,6 +42,9 @@ describe('Resource(search)', function() {
   beforeEach(function() {
     return test.initializeServer()
       .then(function() {
+        return Promise.all([ test.models.User.ready(), test.models.UserWithIndex.ready() ]);
+      })
+      .then(function() {
         return Promise.all([
           test.models.User.save(_.cloneDeep(test.userlist)),
           test.models.UserWithIndex.save(_.cloneDeep(test.userlist))
