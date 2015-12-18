@@ -24,6 +24,8 @@ describe('Middleware', function() {
           username: test.db.type.string().required(),
           email: test.db.type.string().validator(validator.isEmail)
         });
+
+        return test.models.User.tableReady();
       });
   });
 

@@ -24,6 +24,8 @@ describe('Resource(pagination)', function() {
           { username: 'james', email: 'james@gmail.com' },
           { username: 'william', email: 'william@gmail.com' }
         ];
+
+        return test.models.User.tableReady();
       });
   });
 

@@ -14,16 +14,13 @@ function TestFixture() {
 }
 
 TestFixture.prototype.initializeDatabase = function() {
-  var self = this;
-  return new Promise(function(resolve, reject) {
-    self.dbName = (uuid.v4()).replace(/-/g, '');
-    self.db = thinky({
-      db: self.dbName,
-      silent: true
-    });
-
-    resolve();
+  this.dbName = (uuid.v4()).replace(/-/g, '');
+  this.db = thinky({
+    db: this.dbName,
+    silent: true
   });
+
+  return this.db.dbReady();
 };
 
 TestFixture.prototype.initializeServer = function() {

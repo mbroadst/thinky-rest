@@ -22,6 +22,10 @@ describe('Resource(basic)', function() {
           firstname: test.db.type.string(),
           lastname: test.db.type.string()
         });
+
+        return Promise.all([
+          test.models.User.tableReady(), test.models.Person.tableReady()
+        ]);
       });
   });
 

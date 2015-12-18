@@ -32,6 +32,10 @@ describe('Resource(search)', function() {
           { username: 'edward', email: 'edward@gmail.com' },
           { username: 'arthur', email: 'aaaaarthur@gmail.com' }
         ];
+
+        return Promise.all([
+          test.models.User.tableReady(), test.models.UserWithIndex.tableReady()
+        ]);
       });
   });
 
