@@ -18,13 +18,15 @@ describe('Resource(sort)', function() {
         });
 
         test.userlist = [
-          { username: 'arthur', email: 'arthur@gmail.com' },
-          { username: 'james', email: 'james@gmail.com' },
-          { username: 'henry', email: 'henry@gmail.com' },
-          { username: 'william', email: 'william@gmail.com' },
-          { username: 'edward', email: 'edward@gmail.com' },
-          { username: 'arthur', email: 'aaaaarthur@gmail.com' }
+          { username: 'arthur', email: 'arthur@gmail.com', other: { data: 'a' } },
+          { username: 'james', email: 'james@gmail.com', other: { data: 'b' } },
+          { username: 'henry', email: 'henry@gmail.com', other: { data: 'c' } },
+          { username: 'william', email: 'william@gmail.com', other: { data: 'd' } },
+          { username: 'edward', email: 'edward@gmail.com', other: { data: 'e' } },
+          { username: 'arthur', email: 'aaaaarthur@gmail.com', other: { data: 'f' } }
         ];
+
+        return test.models.User.tableReady();
       });
   });
 
@@ -152,6 +154,46 @@ describe('Resource(sort)', function() {
       done();
     });
   });
+
+  it('should sort by deep criteria', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=other.data'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = JSON.parse(body).map(function(r) {
+        return _.omit(r, 'id');
+      });
+
+      expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']));
+      done();
+    });
+  });
+
+  it('should sort by deep criteria in reverse', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=-other.data'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = JSON.parse(body).map(function(r) {
+        return _.omit(r, 'id');
+      });
+
+      expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']).reverse());
+      done();
+    });
+  });
+
+
 
   // it('should fail sorting with a restricted attribute', function(done) {
   //   rest.resource({
