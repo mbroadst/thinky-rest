@@ -46,6 +46,12 @@ describe('Resource(basic)', function() {
           endpoints: ['/users', '/user/:id']
         });
 
+        test.userProfileResource = rest.resource({
+          model: test.models.User,
+          endpoints: ['/users/:username/profile', '/user/:username/profile'],
+          actions: ['create']
+        });
+
         test.userResource.list.fetch.before(function(req, res, context) {
           if (!!test.userResource.enableCriteriaTest) {
             context.criteria = { id: 1 };
@@ -100,6 +106,19 @@ describe('Resource(basic)', function() {
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(201);
         expect(response.headers.location).to.match(/\/user\/\.*?/);
+        done();
+      });
+    });
+
+    it('should create a record using the endpoint attributes', function(done) {
+      request.post({
+        url: test.baseUrl + '/users/arthur/profile',
+        json: { email: 'arthur@gmail.com' }
+      }, function(error, response, body) {
+        expect(response.statusCode).to.equal(201);
+        expect(response.headers.location).to.match(/\/user\/\.*?/);
+        delete body.id;
+        expect(body).to.eql({ username: 'arthur', email: 'arthur@gmail.com' });
         done();
       });
     });
