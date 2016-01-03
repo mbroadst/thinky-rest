@@ -137,6 +137,17 @@ describe('Resource(search)', function() {
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
         { username: 'arthur', email: 'arthur@gmail.com' }
       ]
+    },
+    {
+      name: 'using a secondary index in combination with sort',
+      config: {
+        model: function() { return test.models.UserWithIndex; }
+      },
+      extraQuery: 'username=arthur&sort=username',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' }
+      ]
     }
   ].forEach(function(testCase) {
     it('should search ' + testCase.name, function(done) {
