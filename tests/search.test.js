@@ -89,6 +89,18 @@ describe('Resource(search)', function() {
       ]
     },
     {
+      name: 'tag searching (negated)',
+      config: {},
+      query: 'username:-he',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
       name: 'with custom search param',
       config: {
         search: {
