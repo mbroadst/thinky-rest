@@ -18,12 +18,12 @@ describe('Resource(sort)', function() {
         });
 
         test.userlist = [
-          { username: 'arthur', email: 'arthur@gmail.com', other: { data: 'a' } },
-          { username: 'james', email: 'james@gmail.com', other: { data: 'b' } },
-          { username: 'henry', email: 'henry@gmail.com', other: { data: 'c' } },
-          { username: 'william', email: 'william@gmail.com', other: { data: 'd' } },
-          { username: 'edward', email: 'edward@gmail.com', other: { data: 'e' } },
-          { username: 'arthur', email: 'aaaaarthur@gmail.com', other: { data: 'f' } }
+          { username: 'arthur', email: 'arthur@gmail.com', other: { data: 'a' }, array: [ { data: 'f' } ] },
+          { username: 'james', email: 'james@gmail.com', other: { data: 'b' }, array: [ { data: 'e' } ] },
+          { username: 'henry', email: 'henry@gmail.com', other: { data: 'c' }, array: [ { data: 'd' } ] },
+          { username: 'william', email: 'william@gmail.com', other: { data: 'd' }, array: [ { data: 'c' } ] },
+          { username: 'edward', email: 'edward@gmail.com', other: { data: 'e' }, array: [ { data: 'b' } ] },
+          { username: 'arthur', email: 'aaaaarthur@gmail.com', other: { data: 'f' }, array: [ { data: 'a' } ] }
         ];
 
         return test.models.User.tableReady();
@@ -168,11 +168,49 @@ describe('Resource(sort)', function() {
       var records = JSON.parse(body).map(function(r) {
         return _.omit(r, 'id');
       });
-
       expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']));
       done();
     });
   });
+
+  it('should sort by deep criteria with an array', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=array[0].data'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = JSON.parse(body).map(function(r) {
+        return _.omit(r, 'id');
+      });
+
+      expect(records).to.eql(_.sortByAll(test.userlist, ['array[0].data']));
+      done();
+    });
+  });
+
+  it('should sort by deep criteria with an array in reverse', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=-array[0].data'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = JSON.parse(body).map(function(r) {
+        return _.omit(r, 'id');
+      });
+
+      expect(records).to.eql(_.sortByAll(test.userlist, ['array[0].data']).reverse());
+      done();
+    });
+  });
+
 
   it('should sort by deep criteria in reverse', function(done) {
     rest.resource({
