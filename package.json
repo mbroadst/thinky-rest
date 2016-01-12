@@ -35,13 +35,13 @@
     "body-parser": "^1.14.2",
     "chai": "^3.4.1",
     "express": "^4.13.3",
-    "istanbul": "^0.4.1",
+    "istanbul": "^0.4.2",
     "jshint": "^2.9.1-rc2",
     "mocha": "^2.3.4",
     "request": "^2.67.0",
     "restify": "^4.0.3",
-    "thinky": "^2.2.3",
+    "thinky": "^2.2.4",
     "uuid": "^2.0.1",
-    "validator": "^4.4.0"
+    "validator": "^4.5.0"
   }
 }
