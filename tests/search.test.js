@@ -165,6 +165,68 @@ describe('Resource(search)', function() {
       ]
     },
     {
+      name: 'using a secondary index if it exists (multiple queries/docs)',
+      config: {
+        model: function() { return test.models.UserWithIndex; }
+      },
+      extraQuery: 'username=arthur&username=edward',
+      preFlight: function(req, res, context) {
+        context.debug = true;
+        return context.continue;
+      },
+      postFlight: function(req, res, context) {
+        expect(context.query._query._query[1][0][2]).to.eql({ index: 'username' });
+        return context.continue;
+      },
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' }
+      ]
+    },
+    {
+      name: 'and not use an existing secondary index if the term is negated',
+      config: {
+        model: function() { return test.models.UserWithIndex; }
+      },
+      extraQuery: 'username=-arthur',
+      preFlight: function(req, res, context) {
+        context.debug = true;
+        return context.continue;
+      },
+      postFlight: function(req, res, context) {
+        expect(context.query._query._query[1][0][2]).to.be.undefined;
+        return context.continue;
+      },
+      expectedResults: [
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
+      name: 'and not use an existing secondary index if one of multiple terms are negated',
+      config: {
+        model: function() { return test.models.UserWithIndex; }
+      },
+      extraQuery: 'username=-arthur&username=edward',
+      preFlight: function(req, res, context) {
+        context.debug = true;
+        return context.continue;
+      },
+      postFlight: function(req, res, context) {
+        expect(context.query._query._query[1][0][2]).to.be.undefined;
+        return context.continue;
+      },
+      expectedResults: [
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
       name: 'using a secondary index in combination with sort',
       config: {
         model: function() { return test.models.UserWithIndex; }
