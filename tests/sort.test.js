@@ -21,6 +21,12 @@ describe('Resource(sort)', function() {
           email: test.db.type.string().validator(validator.isEmail)
         });
 
+        test.models.UserWithIndex = test.db.createModel('usersWithIndex', {
+          username: test.db.type.string().required(),
+          email: test.db.type.string().validator(validator.isEmail)
+        });
+        test.models.UserWithIndex.ensureIndex('email');
+
         test.userlist = [
           { username: 'arthur', email: 'arthur@gmail.com', other: { data: 'a' }, array: [ { data: 'f' } ] },
           { username: 'james', email: 'james@gmail.com', other: { data: 'b' }, array: [ { data: 'e' } ] },
@@ -30,18 +36,27 @@ describe('Resource(sort)', function() {
           { username: 'arthur', email: 'aaaaarthur@gmail.com', other: { data: 'f' }, array: [ { data: 'a' } ] }
         ];
 
-        return test.models.User.tableReady();
+        return Promise.all([
+          test.models.User.tableReady(), test.models.UserWithIndex.tableReady()
+        ]);
       });
   });
 
-  after(function() {
-    return test.dropDatabase();
-  });
-
+  after(function() { return test.dropDatabase(); });
   beforeEach(function() {
     return test.initializeServer()
-      .then(function() { return test.models.User.save(_.cloneDeep(test.userlist)); })
-      .then(function() { rest.initialize({ app: test.app, thinky: test.db }); });
+      .then(function() {
+        return Promise.all([ test.models.User.ready(), test.models.UserWithIndex.ready() ]);
+      })
+      .then(function() {
+        return Promise.all([
+          test.models.User.save(_.cloneDeep(test.userlist)),
+          test.models.UserWithIndex.save(_.cloneDeep(test.userlist))
+        ]);
+      })
+      .then(function() {
+        rest.initialize({ app: test.app, thinky: test.db });
+      });
   });
 
   afterEach(function(done) {
@@ -324,6 +339,30 @@ describe('Resource(sort)', function() {
       ]);
 
       done();
+    });
+  });
+
+  it('should sort using a secondary index if available', function(done) {
+    var resource = rest.resource({
+      model: test.models.UserWithIndex,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    resource.list.fetch.before(function(req, res, context) {
+      context.debug = true;
+      return context.continue;
+    });
+    resource.list.send.after(function(req, res, context) {
+      expect(context.query._query._query[1][0][2]).to.eql({ index: 'email' });
+      done();
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=email'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+        var records = parseAndRemoveFields(body, ['id']);
+        expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
     });
   });
 

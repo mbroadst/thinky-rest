@@ -151,6 +151,14 @@ describe('Resource(search)', function() {
         model: function() { return test.models.UserWithIndex; }
       },
       extraQuery: 'username=arthur',
+      preFlight: function(req, res, context) {
+        context.debug = true;
+        return context.continue;
+      },
+      postFlight: function(req, res, context) {
+        expect(context.query._query._query[1][0][2]).to.eql({ index: 'username' });
+        return context.continue;
+      },
       expectedResults: [
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
         { username: 'arthur', email: 'arthur@gmail.com' }
@@ -162,6 +170,14 @@ describe('Resource(search)', function() {
         model: function() { return test.models.UserWithIndex; }
       },
       extraQuery: 'username=arthur&sort=username',
+      preFlight: function(req, res, context) {
+        context.debug = true;
+        return context.continue;
+      },
+      postFlight: function(req, res, context) {
+        expect(context.query._query._query[1][0][1][0][2]).to.eql({ index: 'username' });
+        return context.continue;
+      },
       expectedResults: [
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
         { username: 'arthur', email: 'arthur@gmail.com' }
@@ -212,6 +228,8 @@ describe('Resource(search)', function() {
 
       if (testCase.preFlight)
         testResource.list.fetch.before(testCase.preFlight);
+      if (testCase.postFlight)
+        testResource.list.send.before(testCase.postFlight);
 
       var url = test.baseUrl + resourceConfig.endpoints[0] + '?';
       if (!!testCase.query) {
