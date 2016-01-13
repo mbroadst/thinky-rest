@@ -7,6 +7,13 @@ var request = require('request'),
     TestFixture = require('./test-fixture'),
     validator = require('validator');
 
+function parseAndRemoveFields(data, fields) {
+  return JSON.parse(data).map(function(r) {
+    fields.forEach(function(field) { delete r[field]; });
+    return r;
+  });
+}
+
 var test = new TestFixture();
 describe('Resource(sort)', function() {
   before(function() {
@@ -63,9 +70,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=email'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-        var records = JSON.parse(body).map(function(r) {
-          return _.omit(r, 'id');
-        });
+        var records = JSON.parse(body).map(function(r) { return _.omit(r, 'id'); });
         expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
         done();
     });
@@ -192,7 +197,7 @@ describe('Resource(sort)', function() {
     });
   });
 
-  it('should sort by deep criteria with an array in reverse', function(done) {
+  it('should sort by deep criteria with an array descending', function(done) {
     rest.resource({
       model: test.models.User,
       endpoints: ['/users', '/users/:id']
@@ -211,8 +216,7 @@ describe('Resource(sort)', function() {
     });
   });
 
-
-  it('should sort by deep criteria in reverse', function(done) {
+  it('should sort by deep criteria in descending', function(done) {
     rest.resource({
       model: test.models.User,
       endpoints: ['/users', '/users/:id']
@@ -231,7 +235,125 @@ describe('Resource(sort)', function() {
     });
   });
 
+  it('should sort by a single field ascending', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
 
+    request.get({
+      url: test.baseUrl + '/users?sort=email'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = parseAndRemoveFields(body, ['id', 'other', 'array']);
+      expect(records).to.eql([
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]);
+
+      done();
+    });
+  });
+
+  it('should sort by a single field descending', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=-email'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = parseAndRemoveFields(body, ['id', 'other', 'array']);
+      expect(records).to.eql([
+        { username: 'william', email: 'william@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' }
+      ]);
+
+      done();
+    });
+  });
+
+  it('should sort by multiple fields', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=username,email'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = parseAndRemoveFields(body, ['id', 'other', 'array']);
+      expect(records).to.eql([
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]);
+
+      done();
+    });
+  });
+
+  it('should sort by multiple fields ascending/descending', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=username,-email'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = parseAndRemoveFields(body, ['id', 'other', 'array']);
+      expect(records).to.eql([
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]);
+
+      done();
+    });
+  });
+
+  it('should sort by multiple fields (multiple query items)', function(done) {
+    rest.resource({
+      model: test.models.User,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=username&sort=email'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = parseAndRemoveFields(body, ['id', 'other', 'array']);
+      expect(records).to.eql([
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]);
+
+      done();
+    });
+  });
 
   // it('should fail sorting with a restricted attribute', function(done) {
   //   rest.resource({
