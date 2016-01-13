@@ -8,10 +8,7 @@ var request = require('request'),
     validator = require('validator');
 
 function parseAndRemoveFields(data, fields) {
-  return JSON.parse(data).map(function(r) {
-    fields.forEach(function(field) { delete r[field]; });
-    return r;
-  });
+  return JSON.parse(data).map(function(r) { return _.omit(r, fields); });
 }
 
 var test = new TestFixture();
@@ -43,19 +40,13 @@ describe('Resource(sort)', function() {
 
   beforeEach(function() {
     return test.initializeServer()
-      .then(function() {
-        return test.models.User.save(_.cloneDeep(test.userlist));
-      })
-      .then(function() {
-        rest.initialize({ app: test.app, thinky: test.db });
-      });
+      .then(function() { return test.models.User.save(_.cloneDeep(test.userlist)); })
+      .then(function() { rest.initialize({ app: test.app, thinky: test.db }); });
   });
 
   afterEach(function(done) {
     test.clearDatabase()
-      .then(function() {
-        test.server.close(done);
-      });
+      .then(function() { test.server.close(done); });
   });
 
 //////
@@ -70,7 +61,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=email'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-        var records = JSON.parse(body).map(function(r) { return _.omit(r, 'id'); });
+        var records = parseAndRemoveFields(body, ['id']);
         expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
         done();
     });
@@ -89,9 +80,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?orderby=email'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
       done();
     });
@@ -110,9 +99,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=email'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
       done();
     });
@@ -131,9 +118,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
       done();
     });
@@ -152,9 +137,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=email'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
       done();
     });
@@ -170,9 +153,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=other.data'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']));
       done();
     });
@@ -188,10 +169,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=array[0].data'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
-
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['array[0].data']));
       done();
     });
@@ -207,10 +185,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=-array[0].data'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
-
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['array[0].data']).reverse());
       done();
     });
@@ -226,10 +201,7 @@ describe('Resource(sort)', function() {
       url: test.baseUrl + '/users?sort=-other.data'
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
-      var records = JSON.parse(body).map(function(r) {
-        return _.omit(r, 'id');
-      });
-
+      var records = parseAndRemoveFields(body, ['id']);
       expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']).reverse());
       done();
     });

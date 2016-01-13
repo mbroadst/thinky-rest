@@ -166,6 +166,16 @@ describe('Resource(search)', function() {
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
         { username: 'arthur', email: 'arthur@gmail.com' }
       ]
+    },
+    {
+      name: 'using multiple instances of the same direct filter',
+      config: {},
+      extraQuery: 'username=arthur&username=william',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
     }
   ].forEach(function(testCase) {
     it('should search ' + testCase.name, function(done) {
@@ -190,6 +200,7 @@ describe('Resource(search)', function() {
 
       if (!!testCase.extraQuery) url = url + testCase.extraQuery;
       request.get({ url: url }, function(err, response, body) {
+        if (response.statusCode !== 200) console.log(body);
         expect(response.statusCode).to.equal(200);
         var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
         records = _.sortBy(records, 'email');
