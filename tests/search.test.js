@@ -176,6 +176,27 @@ describe('Resource(search)', function() {
         { username: 'arthur', email: 'arthur@gmail.com' },
         { username: 'william', email: 'william@gmail.com' }
       ]
+    },
+    {
+      name: 'using a negated direct filter',
+      config: {},
+      extraQuery: 'username=-arthur',
+      expectedResults: [
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
+      name: 'using a negated direct filter on multiple keys',
+      config: {},
+      extraQuery: 'username=-arthur&username=-edward',
+      expectedResults: [
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
     }
   ].forEach(function(testCase) {
     it('should search ' + testCase.name, function(done) {
