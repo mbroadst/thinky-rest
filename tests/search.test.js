@@ -81,7 +81,13 @@ describe('Resource(search)', function() {
       ]
     },
     {
-      name: 'tag searching',
+      name: 'only using the first provided search term',
+      config: {},
+      extraQuery: 'q=william&q=henry',
+      expectedResults: [{ username: 'william', email: 'william@gmail.com' }]
+    },
+    {
+      name: 'using tag searching',
       config: {},
       query: 'username:he',
       expectedResults: [
@@ -89,7 +95,7 @@ describe('Resource(search)', function() {
       ]
     },
     {
-      name: 'tag searching (negated)',
+      name: 'using tag searching (negated)',
       config: {},
       query: 'username:-he',
       expectedResults: [
