@@ -78,7 +78,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
         var records = parseAndRemoveFields(body, ['id']);
-        expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
+        expect(records).to.eql(_.sortBy(test.userlist, ['email']));
         done();
     });
   });
@@ -97,7 +97,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
+      expect(records).to.eql(_.sortBy(test.userlist, ['email']));
       done();
     });
   });
@@ -116,7 +116,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
+      expect(records).to.eql(_.sortBy(test.userlist, ['email']));
       done();
     });
   });
@@ -135,7 +135,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
+      expect(records).to.eql(_.sortBy(test.userlist, ['email']));
       done();
     });
   });
@@ -154,7 +154,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
+      expect(records).to.eql(_.sortBy(test.userlist, ['email']));
       done();
     });
   });
@@ -170,7 +170,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']));
+      expect(records).to.eql(_.sortBy(test.userlist, ['other.data']));
       done();
     });
   });
@@ -186,7 +186,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['array[0].data']));
+      expect(records).to.eql(_.sortBy(test.userlist, ['array[0].data']));
       done();
     });
   });
@@ -202,7 +202,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['array[0].data']).reverse());
+      expect(records).to.eql(_.sortBy(test.userlist, ['array[0].data']).reverse());
       done();
     });
   });
@@ -218,7 +218,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
       var records = parseAndRemoveFields(body, ['id']);
-      expect(records).to.eql(_.sortByAll(test.userlist, ['other.data']).reverse());
+      expect(records).to.eql(_.sortBy(test.userlist, ['other.data']).reverse());
       done();
     });
   });
@@ -363,7 +363,7 @@ describe('Resource(sort)', function() {
     }, function(err, response, body) {
       expect(response.statusCode).to.equal(200);
         var records = parseAndRemoveFields(body, ['id']);
-        expect(records).to.eql(_.sortByAll(test.userlist, ['email']));
+        expect(records).to.eql(_.sortBy(test.userlist, ['email']));
     });
   });
 

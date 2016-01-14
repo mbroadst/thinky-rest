@@ -329,7 +329,7 @@ describe('Resource(basic)', function() {
 
       return test.models.User.save(_.cloneDeep(test.userlist))
         .then(function() {
-          test.userlist = _.sortByAll(test.userlist, ['username', 'email']);
+          test.userlist = _.sortBy(test.userlist, ['username', 'email']);
         });
     });
 
@@ -350,7 +350,7 @@ describe('Resource(basic)', function() {
         url: test.baseUrl + '/users'
       }, function(err, response, body) {
         expect(response.statusCode).to.equal(200);
-        var records = _.sortByAll(parseAndRemoveId(body), ['username', 'email']);
+        var records = _.sortBy(parseAndRemoveId(body), ['username', 'email']);
         expect(records).to.eql(test.userlist);
         expect(response.headers['content-range']).to.equal('items 0-5/6');
         done();
