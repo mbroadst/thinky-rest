@@ -246,7 +246,17 @@ describe('Resource(search)', function() {
       ]
     },
     {
-      name: 'using multiple instances of the same direct filter',
+      name: 'using multiple instances of the same direct filter (single query)',
+      config: {},
+      extraQuery: 'username=arthur,william',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
+      name: 'using multiple instances of the same direct filter (multiple queries)',
       config: {},
       extraQuery: 'username=arthur&username=william',
       expectedResults: [
@@ -267,7 +277,17 @@ describe('Resource(search)', function() {
       ]
     },
     {
-      name: 'using a negated direct filter on multiple keys',
+      name: 'using a negated direct filter on multiple keys (single query)',
+      config: {},
+      extraQuery: 'username=-arthur,-edward',
+      expectedResults: [
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
+      name: 'using a negated direct filter on multiple keys (multiple queries)',
       config: {},
       extraQuery: 'username=-arthur&username=-edward',
       expectedResults: [
