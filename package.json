@@ -1,7 +1,7 @@
 {
   "name": "thinky-rest",
   "description": "Create REST resources and controllers with thinky and Express or Restify",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "author": {
     "name": "Matt Broadstone",
     "email": "mbroadst@gmail.com"
@@ -27,21 +27,21 @@
     "api"
   ],
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.2.1",
     "inflection": "^1.8.0",
-    "lodash": "^4.0.0"
+    "lodash": "^4.2.1"
   },
   "devDependencies": {
     "body-parser": "^1.14.2",
-    "chai": "^3.4.1",
-    "express": "^4.13.3",
+    "chai": "^3.5.0",
+    "express": "^4.13.4",
     "istanbul": "^0.4.2",
-    "jshint": "^2.9.1-rc3",
-    "mocha": "^2.3.4",
-    "request": "^2.67.0",
+    "jshint": "^2.9.1",
+    "mocha": "^2.4.5",
+    "request": "^2.69.0",
     "restify": "^4.0.3",
     "thinky": "^2.2.4",
     "uuid": "^2.0.1",
-    "validator": "^4.5.0"
+    "validator": "^4.7.0"
   }
 }
