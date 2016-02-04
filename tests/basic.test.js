@@ -106,6 +106,21 @@ describe('Resource(basic)', function() {
       }, function(error, response, body) {
         expect(response.statusCode).to.equal(201);
         expect(response.headers.location).to.match(/\/user\/\.*?/);
+        delete body.id;
+        expect(body).to.eql({ username: 'arthur', email: 'arthur@gmail.com' });
+        done();
+      });
+    });
+
+    it('should create a record (omitting cache buster)', function(done) {
+      request.post({
+        url: test.baseUrl + '/users?_=1454605315767',
+        json: { username: 'arthur', email: 'arthur@gmail.com' }
+      }, function(error, response, body) {
+        expect(response.statusCode).to.equal(201);
+        expect(response.headers.location).to.match(/\/user\/\.*?/);
+        delete body.id;
+        expect(body).to.eql({ username: 'arthur', email: 'arthur@gmail.com' });
         done();
       });
     });
@@ -193,6 +208,29 @@ describe('Resource(basic)', function() {
       });
     });
 
+    it('should read a record (omiting cache busting token)', function(done) {
+      var userData = { username: 'jamez', email: 'jamez@gmail.com' };
+      request.post({
+        url: test.baseUrl + '/users',
+        json: userData
+      }, function(error, response, body) {
+        expect(error).is.null;
+        expect(response.headers.location).is.not.empty;
+
+        var path = response.headers.location;
+        request.get({
+          url: test.baseUrl + path + '?_=1454605315780'
+        }, function(err, response, body) {
+          expect(response.statusCode).to.equal(200);
+          var record = _.isObject(body) ? body : JSON.parse(body);
+
+          delete record.id;
+          expect(record).to.eql(userData);
+          done();
+        });
+      });
+    });
+
     // it('should return an error when find fails during read', function(done) {
     //   request.post({
     //     url: test.baseUrl + '/users',
@@ -239,6 +277,30 @@ describe('Resource(basic)', function() {
         expect(error).is.null;
         expect(response.headers.location).is.not.empty;
 
+        var path = response.headers.location;
+        request.put({
+          url: test.baseUrl + path,
+          json: { email: 'emma@fmail.co.uk' }
+        }, function(err, response, body) {
+          expect(response.statusCode).to.equal(200);
+          var record = _.isObject(body) ? body : JSON.parse(body);
+
+          delete record.id;
+          userData.email = 'emma@fmail.co.uk';
+          expect(record).to.eql(userData);
+          done();
+        });
+      });
+    });
+
+    it('should update a record (ignoring cache busting token)', function(done) {
+      var userData = { username: 'jamez', email: 'jamez@gmail.com' };
+      request.post({
+        url: test.baseUrl + '/users' + '?_=1454605315780',
+        json: userData
+      }, function(error, response, body) {
+        expect(error).is.null;
+        expect(response.headers.location).is.not.empty;
         var path = response.headers.location;
         request.put({
           url: test.baseUrl + path,

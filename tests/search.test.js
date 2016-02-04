@@ -69,7 +69,6 @@ describe('Resource(search)', function() {
   [
     {
       name: 'with default options',
-      config: {},
       query: 'gmail.com',
       expectedResults: [
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
@@ -82,13 +81,11 @@ describe('Resource(search)', function() {
     },
     {
       name: 'only using the first provided search term',
-      config: {},
       extraQuery: 'q=william&q=henry',
       expectedResults: [{ username: 'william', email: 'william@gmail.com' }]
     },
     {
       name: 'using tag searching',
-      config: {},
       query: 'username:he',
       expectedResults: [
         { username: 'henry', email: 'henry@gmail.com' }
@@ -96,7 +93,6 @@ describe('Resource(search)', function() {
     },
     {
       name: 'using tag searching (negated)',
-      config: {},
       query: 'username:-he',
       expectedResults: [
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
@@ -128,13 +124,11 @@ describe('Resource(search)', function() {
     },
     {
       name: 'in combination with filtered results',
-      config: {},
       query: 'aaaa&username=arthur',
       expectedResults: [{ username: 'arthur', email: 'aaaaarthur@gmail.com' }]
     },
     {
       name: 'with existing search criteria',
-      config: {},
       preFlight: function(req, res, context) {
         context.criteria = { username: "arthur" };
         return context.continue;
@@ -182,6 +176,31 @@ describe('Resource(search)', function() {
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
         { username: 'arthur', email: 'arthur@gmail.com' },
         { username: 'edward', email: 'edward@gmail.com' }
+      ]
+    },
+    {
+      name: 'without a cache busting token affecting results',
+      extraQuery: '_=1454605315780',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
+      ]
+    },
+    {
+      name: 'without a cache busting token affecting results (2)',
+      query: 'gmail.com',
+      extraQuery: '_=1454605315780',
+      expectedResults: [
+        { username: 'arthur', email: 'aaaaarthur@gmail.com' },
+        { username: 'arthur', email: 'arthur@gmail.com' },
+        { username: 'edward', email: 'edward@gmail.com' },
+        { username: 'henry', email: 'henry@gmail.com' },
+        { username: 'james', email: 'james@gmail.com' },
+        { username: 'william', email: 'william@gmail.com' }
       ]
     },
     {
@@ -247,7 +266,6 @@ describe('Resource(search)', function() {
     },
     {
       name: 'using multiple instances of the same direct filter (single query)',
-      config: {},
       extraQuery: 'username=arthur,william',
       expectedResults: [
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
@@ -257,7 +275,6 @@ describe('Resource(search)', function() {
     },
     {
       name: 'using multiple instances of the same direct filter (multiple queries)',
-      config: {},
       extraQuery: 'username=arthur&username=william',
       expectedResults: [
         { username: 'arthur', email: 'aaaaarthur@gmail.com' },
@@ -267,7 +284,6 @@ describe('Resource(search)', function() {
     },
     {
       name: 'using a negated direct filter',
-      config: {},
       extraQuery: 'username=-arthur',
       expectedResults: [
         { username: 'edward', email: 'edward@gmail.com' },
@@ -278,7 +294,6 @@ describe('Resource(search)', function() {
     },
     {
       name: 'using a negated direct filter on multiple keys (single query)',
-      config: {},
       extraQuery: 'username=-arthur,-edward',
       expectedResults: [
         { username: 'henry', email: 'henry@gmail.com' },
@@ -288,7 +303,6 @@ describe('Resource(search)', function() {
     },
     {
       name: 'using a negated direct filter on multiple keys (multiple queries)',
-      config: {},
       extraQuery: 'username=-arthur&username=-edward',
       expectedResults: [
         { username: 'henry', email: 'henry@gmail.com' },
@@ -298,6 +312,7 @@ describe('Resource(search)', function() {
     }
   ].forEach(function(testCase) {
     it('should search ' + testCase.name, function(done) {
+      testCase.config = testCase.config || {};
       if (!!testCase.config.model) testCase.config.model = testCase.config.model();
       var resourceConfig = _.defaults(testCase.config, {
         model: test.models.User,
