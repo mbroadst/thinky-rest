@@ -191,7 +191,6 @@ describe('Resource(basic)', function() {
         url: test.baseUrl + '/people_pkey',
         json: userData
       }, function(error, response, body) {
-        console.log(body);
         expect(response.statusCode).to.eql(201);
         expect(error).is.null;
         expect(response.headers.location).is.not.empty;
