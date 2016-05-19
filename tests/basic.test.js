@@ -186,7 +186,7 @@ describe('Resource(basic)', function() {
     });
 
     it('should automatically generate a path for a new PersonPkey', function(done) {
-      let userData = {firstname:'John', lastname:'Doe'};
+      var userData = {firstname:'John', lastname:'Doe'};
       request.post({
         url: test.baseUrl + '/people_pkey',
         json: userData
@@ -355,7 +355,7 @@ describe('Resource(basic)', function() {
     });
 
     it('should fail to update a record when trying to change the primary key', function(done) {
-      let userData = {firstname:'John', lastname:'Doe'};
+      var userData = {firstname:'John', lastname:'Doe'};
       request.post({
         url: test.baseUrl + '/people_pkey',
         json: userData
@@ -377,7 +377,7 @@ describe('Resource(basic)', function() {
     });
 
     it('should only update lastname when trying to change primary key and lastname', function(done) {
-      let userData = {firstname:'John', lastname:'Doe'};
+      var userData = {firstname:'John', lastname:'Doe'};
       request.post({
         url: test.baseUrl + '/people_pkey',
         json: userData
@@ -400,7 +400,7 @@ describe('Resource(basic)', function() {
     });
 
     it('should update lastname when updating only lastname', function(done) {
-      let userData = {firstname:'John', lastname:'Doe'};
+      var userData = {firstname:'John', lastname:'Doe'};
       request.post({
         url: test.baseUrl + '/people_pkey',
         json: userData
@@ -434,7 +434,7 @@ describe('Resource(basic)', function() {
         expect(record).to.contain.keys('message');
         done();
       });
-    });
+    }); 
 
     it('should delete a record', function(done) {
       var userData = { username: 'chicken', email: 'chicken@gmail.com' };
