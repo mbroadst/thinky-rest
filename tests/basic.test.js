@@ -23,8 +23,17 @@ describe('Resource(basic)', function() {
           lastname: test.db.type.string()
         });
 
+        test.models.PersonPkey = test.db.createModel('person_pkey', {
+          firstname: test.db.type.string(),
+          lastname: test.db.type.string()          
+        }, {
+          pk: "firstname"
+        });        
+
         return Promise.all([
-          test.models.User.tableReady(), test.models.Person.tableReady()
+          test.models.User.tableReady(), 
+          test.models.Person.tableReady(), 
+          test.models.PersonPkey.tableReady()
         ]);
       });
   });
@@ -50,6 +59,10 @@ describe('Resource(basic)', function() {
           model: test.models.User,
           endpoints: ['/users/:username/profile', '/user/:username/profile'],
           actions: ['create']
+        });
+
+        test.personPkeyResource = rest.resource({
+          model: test.models.PersonPkey
         });
 
         test.userResource.list.fetch.before(function(req, res, context) {
@@ -171,7 +184,30 @@ describe('Resource(basic)', function() {
       });
     });
 
-  });
+    it('should automatically generate a path for a new PersonPkey', function(done) {
+      var userData = {firstname:'John', lastname:'Doe'};
+      request.post({
+        url: test.baseUrl + '/person_pkeys',
+        json: userData
+      }, function(error, response, body) {
+        expect(response.statusCode).to.eql(201);
+        expect(error).is.null;
+        expect(response.headers.location).is.not.empty;
+        var path = response.headers.location;
+        expect(path).to.eql('/person_pkey/John');
+        request.get({
+          url: test.baseUrl + path
+        }, function(err, response, body) {
+          var record = _.isObject(body) ? body : JSON.parse(body);
+          delete record.id;
+          expect(record).to.eql(userData);
+          expect(response.statusCode).to.equal(200);
+          done();
+        });
+      });
+    });  
+
+  });  
 
   describe('read', function() {
     it('should return proper error for an invalid record', function(done) {
@@ -193,7 +229,6 @@ describe('Resource(basic)', function() {
       }, function(error, response, body) {
         expect(error).is.null;
         expect(response.headers.location).is.not.empty;
-
         var path = response.headers.location;
         request.get({
           url: test.baseUrl + path
@@ -316,6 +351,75 @@ describe('Resource(basic)', function() {
         });
       });
     });
+
+    it('should fail to update a record when trying to change the primary key', function(done) {
+      var userData = {firstname:'John', lastname:'Doe'};
+      request.post({
+        url: test.baseUrl + '/person_pkeys',
+        json: userData
+      }, function(error, response, body) {
+        expect(response.statusCode).to.eql(201);
+        expect(error).is.null;
+        expect(response.headers.location).is.not.empty;
+        var path = response.headers.location;
+        request.put({
+          url: test.baseUrl + path,
+          json: { firstname: 'Sonny' }
+        }, function(err, response, body) {
+          var record = _.isObject(body) ? body : JSON.parse(body);
+          expect(record).to.eql(userData);
+          expect(response.statusCode).to.eql(200);
+          done();
+        });
+      });
+    });
+
+    it('should only update lastname when trying to change primary key and lastname', function(done) {
+      var userData = {firstname:'John', lastname:'Doe'};
+      request.post({
+        url: test.baseUrl + '/person_pkeys',
+        json: userData
+      }, function(error, response, body) {
+        expect(response.statusCode).to.eql(201);
+        expect(error).is.null;
+        expect(response.headers.location).is.not.empty;
+        var path = response.headers.location;
+        request.put({
+          url: test.baseUrl + path,
+          json: { firstname: 'Sonny', lastname: 'Day'}
+        }, function(err, response, body) {
+          var record = _.isObject(body) ? body : JSON.parse(body);
+          userData.lastname = 'Day';
+          expect(record).to.eql(userData);
+          expect(response.statusCode).to.eql(200);
+          done();
+        });
+      });
+    });
+
+    it('should update lastname when updating only lastname', function(done) {
+      var userData = {firstname:'John', lastname:'Doe'};
+      request.post({
+        url: test.baseUrl + '/person_pkeys',
+        json: userData
+      }, function(error, response, body) {
+        expect(response.statusCode).to.eql(201);
+        expect(error).is.null;
+        expect(response.headers.location).is.not.empty;
+        var path = response.headers.location;
+        request.put({
+          url: test.baseUrl + path,
+          json: { lastname: 'Day'}
+        }, function(err, response, body) {
+          var record = _.isObject(body) ? body : JSON.parse(body);
+          userData.lastname = 'Day';
+          expect(record).to.eql(userData);
+          expect(response.statusCode).to.eql(200);
+          done();
+        });
+      });
+    });
+
   });
 
   describe('delete', function() {
@@ -328,7 +432,7 @@ describe('Resource(basic)', function() {
         expect(record).to.contain.keys('message');
         done();
       });
-    });
+    }); 
 
     it('should delete a record', function(done) {
       var userData = { username: 'chicken', email: 'chicken@gmail.com' };
