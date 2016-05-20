@@ -62,8 +62,7 @@ describe('Resource(basic)', function() {
         });
 
         test.personPkeyResource = rest.resource({
-          model: test.models.PersonPkey,
-          endpoints: ['/people_pkey', '/person_pkey/:firstname']
+          model: test.models.PersonPkey
         });
 
         test.userResource.list.fetch.before(function(req, res, context) {
@@ -188,7 +187,7 @@ describe('Resource(basic)', function() {
     it('should automatically generate a path for a new PersonPkey', function(done) {
       var userData = {firstname:'John', lastname:'Doe'};
       request.post({
-        url: test.baseUrl + '/people_pkey',
+        url: test.baseUrl + '/person_pkeys',
         json: userData
       }, function(error, response, body) {
         expect(response.statusCode).to.eql(201);
@@ -230,7 +229,6 @@ describe('Resource(basic)', function() {
       }, function(error, response, body) {
         expect(error).is.null;
         expect(response.headers.location).is.not.empty;
-
         var path = response.headers.location;
         request.get({
           url: test.baseUrl + path
@@ -357,7 +355,7 @@ describe('Resource(basic)', function() {
     it('should fail to update a record when trying to change the primary key', function(done) {
       var userData = {firstname:'John', lastname:'Doe'};
       request.post({
-        url: test.baseUrl + '/people_pkey',
+        url: test.baseUrl + '/person_pkeys',
         json: userData
       }, function(error, response, body) {
         expect(response.statusCode).to.eql(201);
@@ -379,7 +377,7 @@ describe('Resource(basic)', function() {
     it('should only update lastname when trying to change primary key and lastname', function(done) {
       var userData = {firstname:'John', lastname:'Doe'};
       request.post({
-        url: test.baseUrl + '/people_pkey',
+        url: test.baseUrl + '/person_pkeys',
         json: userData
       }, function(error, response, body) {
         expect(response.statusCode).to.eql(201);
@@ -402,7 +400,7 @@ describe('Resource(basic)', function() {
     it('should update lastname when updating only lastname', function(done) {
       var userData = {firstname:'John', lastname:'Doe'};
       request.post({
-        url: test.baseUrl + '/people_pkey',
+        url: test.baseUrl + '/person_pkeys',
         json: userData
       }, function(error, response, body) {
         expect(response.statusCode).to.eql(201);
