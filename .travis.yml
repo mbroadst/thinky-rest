@@ -1,7 +1,6 @@
 language: node_js
 
 node_js:
-  - "0.12"
   - '4'
   - '6'
 
@@ -14,6 +13,8 @@ cache:
 env:
   -
   - USE_RESTIFY=1
+  - USE_THINKAGAIN=1
+  - USE_RESTIFY=1 USE_THINKAGAIN=1
 
 before_script:
   - source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
