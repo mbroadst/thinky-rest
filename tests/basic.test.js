@@ -164,7 +164,17 @@ describe('Resource(basic)', function() {
           var result = _.isObject(body) ? body : JSON.parse(body);
           expect(response.statusCode).to.equal(createTest.expected.statusCode);
           expect(result).to.contain.keys(['message', 'errors']);
-          expect(result.errors).to.eql(createTest.expected.fields);
+
+          if (!!process.env.USE_THINKAGAIN) {
+            var errors = result.errors.map(function(e) {
+              if (e.params.hasOwnProperty('missingProperty')) return e.params.missingProperty;
+              return e.dataPath.slice(1);
+            });
+
+            expect(errors).to.eql(createTest.expected.fields);
+          } else {
+            expect(result.errors).to.eql(createTest.expected.fields);
+          }
 
           done();
         });

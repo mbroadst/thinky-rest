@@ -40,6 +40,7 @@
     "mocha": "^2.4.5",
     "request": "^2.69.0",
     "restify": "^4.0.3",
+    "thinkagain": "^0.0.1",
     "thinky": "^2.2.4",
     "uuid": "^2.0.1",
     "validator": "^4.7.0"

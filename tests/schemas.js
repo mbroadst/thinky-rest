@@ -1,7 +1,4 @@
 'use strict';
-var type = require('thinky').type,
-    validator = require('validator');
-
 var schemas = module.exports = {};
 
 if (!!process.env.USE_THINKAGAIN) {
@@ -22,6 +19,9 @@ if (!!process.env.USE_THINKAGAIN) {
     }
   };
 } else {
+  var type = require('thinky').type,
+      validator = require('validator');
+
   schemas.User = {
     username: type.string().required(),
     email: type.string().validator(validator.isEmail)

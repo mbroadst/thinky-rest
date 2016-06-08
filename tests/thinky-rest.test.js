@@ -9,10 +9,10 @@ describe('ThinkyRest', function() {
     done();
   });
 
-  it('should throw an exception when initialized without a think instance', function(done) {
+  it('should throw an exception when initialized without an odm instance', function(done) {
     expect(rest.initialize.bind(rest, {
       app: {}
-    })).to.throw('please specify a thinky instance');
+    })).to.throw('please specify an ODM instance');
     done();
   });
 

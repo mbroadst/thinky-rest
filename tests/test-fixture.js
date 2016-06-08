@@ -1,7 +1,6 @@
 'use strict';
 
 var Promise = require('bluebird'),
-    thinky = require('thinky'),
     http = require('http'),
     express = require('express'),
     bodyParser = require('body-parser'),
@@ -9,13 +8,15 @@ var Promise = require('bluebird'),
     chai = require('chai'),
     uuid = require('uuid');
 
+var odm = (!!process.env.USE_THINKAGAIN) ? require('thinkagain') : require('thinky');
+
 function TestFixture() {
   this.models = {};
 }
 
 TestFixture.prototype.initializeDatabase = function() {
   this.dbName = (uuid.v4()).replace(/-/g, '');
-  this.db = thinky({
+  this.db = odm({
     db: this.dbName,
     silent: true
   });
