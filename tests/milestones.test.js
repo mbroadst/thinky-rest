@@ -1,12 +1,12 @@
 'use strict';
 
 var Promise = require('bluebird'),
+    TestFixture = require('./test-fixture'),
     request = require('request'),
     expect = require('chai').expect,
     _ = require('lodash'),
     rest = require('../lib'),
-    TestFixture = require('./test-fixture'),
-    validator = require('validator'),
+    schemas = require('./schemas'),
     errors = require('../lib/errors');
 
 var test = new TestFixture();
@@ -14,11 +14,7 @@ describe('Milestones', function() {
   before(function() {
     return test.initializeDatabase()
       .then(function() {
-        test.models.User = test.db.createModel('users', {
-          username: test.db.type.string().required(),
-          email: test.db.type.string().validator(validator.isEmail)
-        });
-
+        test.models.User = test.db.createModel('users', schemas.User);
         return test.models.User.tableReady();
       });
   });

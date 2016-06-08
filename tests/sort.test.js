@@ -1,12 +1,12 @@
 'use strict';
 
 var Promise = require('bluebird'),
+    TestFixture = require('./test-fixture'),
     request = require('request'),
     expect = require('chai').expect,
     _ = require('lodash'),
     rest = require('../lib'),
-    TestFixture = require('./test-fixture'),
-    validator = require('validator');
+    schemas = require('./schemas');
 
 function parseAndRemoveFields(data, fields) {
   return JSON.parse(data).map(function(r) { return _.omit(r, fields); });
@@ -17,15 +17,8 @@ describe('Resource(sort)', function() {
   before(function() {
     return test.initializeDatabase()
       .then(function() {
-        test.models.User = test.db.createModel('users', {
-          username: test.db.type.string().required(),
-          email: test.db.type.string().validator(validator.isEmail)
-        });
-
-        test.models.UserWithIndex = test.db.createModel('usersWithIndex', {
-          username: test.db.type.string().required(),
-          email: test.db.type.string().validator(validator.isEmail)
-        });
+        test.models.User = test.db.createModel('users', schemas.User);
+        test.models.UserWithIndex = test.db.createModel('usersWithIndex', schemas.User);
         test.models.UserWithIndex.ensureIndex('email');
 
         test.userlist = [

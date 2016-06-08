@@ -1,38 +1,25 @@
 'use strict';
 
 var Promise = require('bluebird'),
+    TestFixture = require('./test-fixture'),
     request = require('request'),
     expect = require('chai').expect,
     _ = require('lodash'),
     rest = require('../lib'),
-    TestFixture = require('./test-fixture'),
-    validator = require('validator');
+    schemas = require('./schemas');
 
 var test = new TestFixture();
 describe('Resource(basic)', function() {
   before(function() {
     return test.initializeDatabase()
       .then(function() {
-        test.models.User = test.db.createModel('users', {
-          username: test.db.type.string().required(),
-          email: test.db.type.string().validator(validator.isEmail)
-        });
-
-        test.models.Person = test.db.createModel('person', {
-          firstname: test.db.type.string(),
-          lastname: test.db.type.string()
-        });
-
-        test.models.PersonPkey = test.db.createModel('person_pkey', {
-          firstname: test.db.type.string(),
-          lastname: test.db.type.string()          
-        }, {
-          pk: "firstname"
-        });        
+        test.models.User = test.db.createModel('users', schemas.User);
+        test.models.Person = test.db.createModel('person', schemas.Person);
+        test.models.PersonPkey = test.db.createModel('person_pkey', schemas.Person, { pk: 'firstname' });
 
         return Promise.all([
-          test.models.User.tableReady(), 
-          test.models.Person.tableReady(), 
+          test.models.User.tableReady(),
+          test.models.Person.tableReady(),
           test.models.PersonPkey.tableReady()
         ]);
       });
@@ -205,9 +192,9 @@ describe('Resource(basic)', function() {
           done();
         });
       });
-    });  
+    });
 
-  });  
+  });
 
   describe('read', function() {
     it('should return proper error for an invalid record', function(done) {
@@ -432,7 +419,7 @@ describe('Resource(basic)', function() {
         expect(record).to.contain.keys('message');
         done();
       });
-    }); 
+    });
 
     it('should delete a record', function(done) {
       var userData = { username: 'chicken', email: 'chicken@gmail.com' };
