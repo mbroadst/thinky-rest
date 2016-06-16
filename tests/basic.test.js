@@ -204,6 +204,25 @@ describe('Resource(basic)', function() {
       });
     });
 
+    it('should return an error when trying to create with a duplicate pk', function(done) {
+      request.post({
+        url: test.baseUrl + '/users',
+        json: { username: 'arthur', email: 'arthur@gmail.com' }
+      }, function(error, response, body) {
+        expect(response.statusCode).to.equal(201);
+        expect(response.headers.location).to.match(/\/user\/\.*?/);
+
+        request.post({
+          url: test.baseUrl + '/users',
+          json: { id: body.id, username: 'arthur', email: 'arthur@gmail.com' }
+        }, function(error, response, body) {
+          console.log(body);
+          expect(response.statusCode).to.equal(409);
+          done();
+        });
+      });
+    });
+
   });
 
   describe('read', function() {
