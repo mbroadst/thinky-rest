@@ -1,7 +1,7 @@
 {
   "name": "thinky-rest",
   "description": "Create REST resources and controllers with thinky and Express or Restify",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "author": {
     "name": "Matt Broadstone",
     "email": "mbroadst@gmail.com"
