@@ -8,14 +8,14 @@ var Promise = require('bluebird'),
     rest = require('../lib'),
     schemas = require('./schemas');
 
-var test = new TestFixture();
-describe('validation', function() {
-  before(function() {
-    if (!process.env.USE_RESTIFY || !process.env.USE_THINKAGAIN) {
-      console.warn('skipping suite because feature only supports restify + thinkagain');
-      this.skip();
-    }
 
+
+var test = new TestFixture();
+
+var maybeDescribe =
+  (process.env.USE_RESTIFY && process.env.USE_THINKAGAIN) ? describe : describe.skip;
+maybeDescribe('validation', function() {
+  before(function() {
     test.resources = [];
     return test.initializeDatabase()
       .then(function() {
@@ -33,10 +33,6 @@ describe('validation', function() {
   });
 
   after(function() {
-    if (!process.env.USE_RESTIFY || !process.env.USE_THINKAGAIN) {
-      this.skip();
-    }
-
     return test.dropDatabase();
   });
 
@@ -46,7 +42,8 @@ describe('validation', function() {
         rest.initialize({ app: test.app, odm: test.db });
         test.resources.push(rest.resource({
           model: test.models.User,
-          endpoints: ['/users', '/user/:id']
+          endpoints: ['/users', '/user/:id'],
+          documentValidation: true
         }));
       });
   });
@@ -88,7 +85,6 @@ describe('validation', function() {
         params: {
           type: 'object',
           properties: { id: { type: 'string' } },
-          additionalProperties: false
         }
       });
     });
@@ -107,8 +103,7 @@ describe('validation', function() {
             offset: { type: 'integer', default: 0 },
             q: { type: 'string' },
             sort: { type: 'string' }
-          },
-          additionalProperties: false
+          }
         }
       });
     });
@@ -123,7 +118,6 @@ describe('validation', function() {
         params: {
           type: 'object',
           properties: { id: { type: 'string' } },
-          additionalProperties: false
         },
         body: {
           type: 'object',
@@ -132,7 +126,6 @@ describe('validation', function() {
             email: { type: 'string', format: 'email' },
             id: { type: 'string' }
           },
-          required: [ 'username' ],
           id: 'users'
         }
       });
@@ -148,7 +141,6 @@ describe('validation', function() {
         params: {
           type: 'object',
           properties: { id: { type: 'string' } },
-          additionalProperties: false
         }
       });
     });
