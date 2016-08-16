@@ -27,22 +27,22 @@
     "api"
   ],
   "dependencies": {
-    "bluebird": "^3.2.1",
-    "inflection": "^1.8.0",
-    "lodash": "^4.2.1"
+    "bluebird": "^3.4.1",
+    "inflection": "^1.10.0",
+    "lodash": "^4.15.0"
   },
   "devDependencies": {
-    "body-parser": "^1.14.2",
+    "body-parser": "^1.15.2",
     "chai": "^3.5.0",
-    "express": "^4.13.4",
-    "istanbul": "^0.4.2",
-    "jshint": "^2.9.1",
+    "express": "^4.14.0",
+    "istanbul": "^0.4.4",
+    "jshint": "^2.9.2",
     "mocha": "^2.4.5",
-    "request": "^2.69.0",
-    "restify": "^4.0.3",
-    "thinkagain": "^0.0.1",
-    "thinky": "^2.2.4",
-    "uuid": "^2.0.1",
-    "validator": "^4.7.0"
+    "request": "^2.74.0",
+    "restify": "^4.1.1",
+    "thinkagain": "^0.1.4",
+    "thinky": "^2.3.4",
+    "uuid": "^2.0.2",
+    "validator": "^5.5.0"
   }
 }

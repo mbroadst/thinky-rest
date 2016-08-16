@@ -216,7 +216,6 @@ describe('Resource(basic)', function() {
           url: test.baseUrl + '/users',
           json: { id: body.id, username: 'arthur', email: 'arthur@gmail.com' }
         }, function(error, response, body) {
-          console.log(body);
           expect(response.statusCode).to.equal(409);
           done();
         });
