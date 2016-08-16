@@ -33,6 +33,10 @@ describe('validation', function() {
   });
 
   after(function() {
+    if (!process.env.USE_RESTIFY || !process.env.USE_THINKAGAIN) {
+      this.skip();
+    }
+
     return test.dropDatabase();
   });
 
