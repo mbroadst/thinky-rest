@@ -96,7 +96,7 @@ maybeDescribe('validation', function() {
           validation = listMount.spec.validation;
 
       expect(validation).to.eql({
-        params: {
+        query: {
           type: 'object',
           properties: {
             count: { type: 'integer', default: 100 },
