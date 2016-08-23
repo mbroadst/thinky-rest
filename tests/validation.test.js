@@ -85,6 +85,7 @@ maybeDescribe('validation', function() {
         params: {
           type: 'object',
           properties: { id: { type: 'string' } },
+          required: [ 'id' ]
         }
       });
     });
@@ -118,6 +119,7 @@ maybeDescribe('validation', function() {
         params: {
           type: 'object',
           properties: { id: { type: 'string' } },
+          required: [ 'id' ]
         },
         body: {
           type: 'object',
@@ -141,6 +143,7 @@ maybeDescribe('validation', function() {
         params: {
           type: 'object',
           properties: { id: { type: 'string' } },
+          required: [ 'id' ]
         }
       });
     });
