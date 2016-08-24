@@ -530,6 +530,32 @@ describe('Milestones', function() {
 
   describe('write', function() {
     // Write to the database for actions that write, reading from context.attributes.
+
+    it('should not overwrite changed attributes in `before` when writing', function(done) {
+      var expected = { username: 'jamez', email: 'injected@email.com' };
+      test.userResource.create.write.before(function(req, res, context) {
+        context.attributes.email = 'injected@email.com';
+        return context.continue;
+      });
+
+      request.post({
+        url: test.baseUrl + '/users',
+        json: { username: 'jamez', email: 'jamez@gmail.com' }
+      }, function(err, response, body) {
+        expect(err).to.be.null;
+        expect(response.statusCode).to.equal(201);
+
+        var path = response.headers.location;
+        request.get({ url: test.baseUrl + path }, function(err, response, body) {
+          var record = _.isObject(body) ? body : JSON.parse(body);
+          delete record.id;
+          expect(response.statusCode).to.equal(200);
+          expect(record).to.eql({ username: 'jamez', email: 'injected@email.com' });
+          expect(record).to.eql(expected);
+          done();
+        });
+      });
+    });
   });
 
   describe('send', function() {
