@@ -71,6 +71,18 @@ maybeDescribe('validation', function() {
           },
           required: [ 'username' ],
           id: 'users'
+        },
+        responses: {
+          200: { description: 'Success' },
+          304: { description: 'Not modified' },
+          409: {
+            description: 'Duplicate record',
+            schema: { $ref: '#/definitions/Error' }
+          },
+          default: {
+            description: 'Unexpected error',
+            schema: { $ref: '#/definitions/Error' }
+          }
         }
       });
     });
@@ -86,6 +98,29 @@ maybeDescribe('validation', function() {
           type: 'object',
           properties: { id: { type: 'string' } },
           required: [ 'id' ]
+        },
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              id: 'users',
+              type: 'object',
+              properties: {
+                email: { type: 'string', format: 'email' },
+                id: { type: 'string' },
+                username: { type: 'string' }
+              },
+              required: [ 'username' ]
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: { $ref: '#/definitions/Error' }
+          },
+          default: {
+            description: 'Unexpected error',
+            schema: { $ref: '#/definitions/Error' }
+          }
         }
       });
     });
@@ -104,6 +139,32 @@ maybeDescribe('validation', function() {
             offset: { type: 'integer', default: 0 },
             q: { type: 'string' },
             sort: { type: 'string' }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'array',
+              items: {
+                id: 'users',
+                type: 'object',
+                properties: {
+                  email: { type: 'string', format: 'email' },
+                  id: { type: 'string' },
+                  username: { type: 'string' }
+                },
+                required: [ 'username' ]
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: { $ref: '#/definitions/Error' }
+          },
+          default: {
+            description: 'Unexpected error',
+            schema: { $ref: '#/definitions/Error' }
           }
         }
       });
@@ -129,6 +190,17 @@ maybeDescribe('validation', function() {
             id: { type: 'string' }
           },
           id: 'users'
+        },
+        responses: {
+          200: { description: 'Success' },
+          404: {
+            description: 'Not found',
+            schema: { $ref: '#/definitions/Error' }
+          },
+          default: {
+            description: 'Unexpected error',
+            schema: { $ref: '#/definitions/Error' }
+          }
         }
       });
     });
@@ -144,6 +216,16 @@ maybeDescribe('validation', function() {
           type: 'object',
           properties: { id: { type: 'string' } },
           required: [ 'id' ]
+        },
+        responses: {
+          404: {
+            description: 'Not found',
+            schema: { $ref: '#/definitions/Error' }
+          },
+          default: {
+            description: 'Unexpected error',
+            schema: { $ref: '#/definitions/Error' }
+          }
         }
       });
     });
