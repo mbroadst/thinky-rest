@@ -65,6 +65,7 @@ maybeDescribe('validation', function() {
         body: {
           type: 'object',
           properties: {
+            available: { type: 'boolean' },
             username: { type: 'string' },
             email: { type: 'string', format: 'email' },
             id: { type: 'string' }
@@ -106,6 +107,7 @@ maybeDescribe('validation', function() {
               id: 'users',
               type: 'object',
               properties: {
+                available: { type: 'boolean' },
                 email: { type: 'string', format: 'email' },
                 id: { type: 'string' },
                 username: { type: 'string' }
@@ -150,6 +152,7 @@ maybeDescribe('validation', function() {
                 id: 'users',
                 type: 'object',
                 properties: {
+                  available: { type: 'boolean' },
                   email: { type: 'string', format: 'email' },
                   id: { type: 'string' },
                   username: { type: 'string' }
@@ -185,6 +188,7 @@ maybeDescribe('validation', function() {
         body: {
           type: 'object',
           properties: {
+            available: { type: 'boolean' },
             username: { type: 'string' },
             email: { type: 'string', format: 'email' },
             id: { type: 'string' }
