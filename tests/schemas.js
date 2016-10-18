@@ -6,7 +6,8 @@ if (!!process.env.USE_THINKAGAIN) {
     type: 'object',
     properties: {
       username: { type: 'string' },
-      email: { type: 'string', format: 'email' }
+      email: { type: 'string', format: 'email' },
+      available: { type: 'boolean' }
     },
     required: [ 'username' ]
   };
@@ -24,7 +25,8 @@ if (!!process.env.USE_THINKAGAIN) {
 
   schemas.User = {
     username: type.string().required(),
-    email: type.string().validator(validator.isEmail)
+    email: type.string().validator(validator.isEmail),
+    available: type.boolean()
   };
 
   schemas.Person = {

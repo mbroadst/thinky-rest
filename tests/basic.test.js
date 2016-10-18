@@ -500,12 +500,12 @@ describe('Resource(basic)', function() {
   describe('list', function() {
     beforeEach(function() {
       test.userlist = [
-        { username: 'arthur', email: 'arthur@gmail.com' },
-        { username: 'james', email: 'james@gmail.com' },
-        { username: 'henry', email: 'henry@gmail.com' },
-        { username: 'william', email: 'william@gmail.com' },
-        { username: 'edward', email: 'edward@gmail.com' },
-        { username: 'arthur', email: 'aaaaarthur@gmail.com' }
+        { username: 'arthur', email: 'arthur@gmail.com', available: true },
+        { username: 'james', email: 'james@gmail.com', available: true },
+        { username: 'henry', email: 'henry@gmail.com', available: false },
+        { username: 'william', email: 'william@gmail.com', available: true },
+        { username: 'edward', email: 'edward@gmail.com', available: false },
+        { username: 'arthur', email: 'aaaaarthur@gmail.com', available: true }
       ];
 
       return test.models.User.save(_.cloneDeep(test.userlist))
@@ -544,8 +544,25 @@ describe('Resource(basic)', function() {
       }, function(err, response, body) {
         expect(response.statusCode).to.equal(200);
         var records = parseAndRemoveId(body);
-        expect(records).to.eql([{ username: 'henry', email: 'henry@gmail.com' }]);
+        expect(records).to.eql([
+          { username: 'henry', email: 'henry@gmail.com', available: false }
+        ]);
         expect(response.headers['content-range']).to.equal('items 0-0/1');
+        done();
+      });
+    });
+
+    it('should list all records matching a field name and boolean value', function(done) {
+      request.get({
+        url: test.baseUrl + '/users?available=false'
+      }, function(err, response, body) {
+        expect(response.statusCode).to.equal(200);
+        var records = _.sortBy(parseAndRemoveId(body), ['username', 'email']);
+        expect(records).to.eql([
+          { username: 'edward', email: 'edward@gmail.com', available: false },
+          { username: 'henry', email: 'henry@gmail.com', available: false }
+        ]);
+        expect(response.headers['content-range']).to.equal('items 0-1/2');
         done();
       });
     });
@@ -569,7 +586,10 @@ describe('Resource(basic)', function() {
         expect(response.statusCode).to.equal(200);
         var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
         expect(response.headers['content-range']).to.equal('items 0-0/1');
-        expect(records).to.eql([{ username: 'william', email: 'william@gmail.com' }]);
+        expect(records).to.eql([
+          { username: 'william', email: 'william@gmail.com', available: true }
+        ]);
+
         done();
       });
     });
@@ -582,8 +602,8 @@ describe('Resource(basic)', function() {
         var records = JSON.parse(body).map(function(r) { delete r.id; return r; });
         expect(response.headers['content-range']).to.equal('items 1-2/6');
         expect(records).to.eql([
-          { username: 'arthur', email: 'arthur@gmail.com' },
-          { username: 'edward', email: 'edward@gmail.com' }
+          { username: 'arthur', email: 'arthur@gmail.com', available: true },
+          { username: 'edward', email: 'edward@gmail.com', available: false }
         ]);
 
         done();
