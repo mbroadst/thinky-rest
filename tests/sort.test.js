@@ -360,6 +360,27 @@ describe('Resource(sort)', function() {
     });
   });
 
+  it('should sort with secondary index, filter and limit', function(done) {
+    var resource = rest.resource({
+      model: test.models.UserWithIndex,
+      endpoints: ['/users', '/users/:id']
+    });
+
+    request.get({
+      url: test.baseUrl + '/users?sort=email&offset=0&count=10&username=-arthur,-henry'
+    }, function(err, response, body) {
+      expect(response.statusCode).to.equal(200);
+      var records = parseAndRemoveFields(body, ['id']);
+      expect(records).to.eql([
+        { username: 'edward', email: 'edward@gmail.com', other: { data: 'e' }, array: [ { data: 'b' } ] },
+        { username: 'james', email: 'james@gmail.com', other: { data: 'b' }, array: [ { data: 'e' } ] },
+        { username: 'william', email: 'william@gmail.com', other: { data: 'd' }, array: [ { data: 'c' } ] },
+      ]);
+
+      done();
+    });
+  });
+
   // it('should fail sorting with a restricted attribute', function(done) {
   //   rest.resource({
   //     model: test.models.User,
